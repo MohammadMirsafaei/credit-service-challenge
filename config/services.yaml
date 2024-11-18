@@ -1,0 +1,12 @@
+services:
+  _defaults:
+    public: true
+    autowire: true
+    autoconfigure: true
+  App\Commands\:
+    resource: '../src/Commands/*'
+    tags: ['console.command']
+  App\Services\:
+    resource: '../src/Services/*'
+  App\Repositories\:
+    resource: '../src/Repositories/*'

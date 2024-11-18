@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: credit-service-app
+    image: credit-service-app
+    volumes:
+      - ./:/var/www
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - credit-service-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: credit-service-mysql
+    volumes:
+      - ./.data/.mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "3306:3306"
+    networks:
+      - credit-service-network
+
+  redis:
+    image: redis:7
+    container_name: credit-service-redis
+    volumes:
+      - ./.data/.redis:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    networks:
+      - credit-service-network
+
+networks:
+    credit-service-network:
+        name: credit-service-network
+        driver: bridge
